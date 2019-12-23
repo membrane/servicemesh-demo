@@ -1,0 +1,20 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: c
+spec:
+  hosts:
+    - c
+  http:
+    - match:
+        - headers:
+            x-client-ip:
+              exact: 192.168.137.1
+      route:
+        - destination:
+            host: c
+            subset: v2
+    - route:
+        - destination:
+            host: c
+            subset: v1

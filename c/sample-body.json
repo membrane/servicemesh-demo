@@ -1,0 +1,15 @@
+{
+  "filenameBase": "abc",
+  "date": "23. Dezember 2019",
+  "billNo": "12345",
+  "positions": [
+    {
+      "description": "Vertrag 123456 Monat April",
+      "amountNetto": "50,00"
+    }
+  ],
+  "amountNetto": "50,00",
+  "amountUst": "9,50",
+  "amountBrutto": "59,50",
+  "receiver": "Max Mustermann\nEine Straße 2\n\n12345 Musterstadt"
+}

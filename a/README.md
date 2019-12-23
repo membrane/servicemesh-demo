@@ -1,0 +1,1 @@
+Open http://localhost:8080/v1/bill?month=2019-11&receiverUsername=max in a web browser.

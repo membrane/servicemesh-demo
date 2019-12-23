@@ -1,0 +1,27 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+group = 'de.predic8.example.servicemesh.c'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '13'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    implementation 'com.github.jhonnymertz:java-wkhtmltopdf-wrapper:1.1.11-RELEASE'
+    implementation 'com.github.spullara.mustache.java:compiler:0.9.6'
+}
+
+test {
+    useJUnitPlatform()
+}

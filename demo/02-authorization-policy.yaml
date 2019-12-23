@@ -1,0 +1,13 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: b
+  namespace: servicemesh-demo
+spec:
+  selector:
+    matchLabels:
+      app: b
+  rules:
+    - from:
+        - source:
+            principals: ["cluster.local/ns/servicemesh-demo/sa/a"]

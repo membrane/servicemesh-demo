@@ -1,0 +1,298 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: a
+  name: a
+  namespace: servicemesh-demo
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: a
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: a
+  namespace: servicemesh-demo
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: a
+  name: a
+  namespace: servicemesh-demo
+spec:
+  selector:
+    matchLabels:
+      app: a
+  template:
+    metadata:
+      labels:
+        app: a
+        version: "1"
+    spec:
+      serviceAccountName: a
+      containers:
+      - image: predic8/servicemesh-demo-a:1
+        name: main
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            memory: 1Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: b
+  name: b
+  namespace: servicemesh-demo
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: b
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: b
+  namespace: servicemesh-demo
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: b
+  name: b
+  namespace: servicemesh-demo
+spec:
+  selector:
+    matchLabels:
+      app: b
+  template:
+    metadata:
+      labels:
+        app: b
+        version: "1"
+    spec:
+      serviceAccountName: b
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://b-db:5432/b
+            - name: SPRING_DATASOURCE_USERNAME
+              value: b
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: b-db-password
+                  key: password
+          image: predic8/servicemesh-demo-b:1
+          name: main
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: c
+  name: c
+  namespace: servicemesh-demo
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: c
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: c
+  namespace: servicemesh-demo
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: c
+  name: c-v2
+  namespace: servicemesh-demo
+spec:
+  selector:
+    matchLabels:
+      app: c
+  template:
+    metadata:
+      labels:
+        app: c
+        version: "2"
+    spec:
+      serviceAccountName: c
+      containers:
+        - image: predic8/servicemesh-demo-c:2
+          name: main
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: b-db
+  name: b-db
+  namespace: servicemesh-demo
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    app: b-db
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: b-db
+  name: b-db-headless
+  namespace: servicemesh-demo
+spec:
+  ports:
+    - port: 5432
+      protocol: TCP
+  selector:
+    app: b-db
+  clusterIP: None
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: b-db
+  namespace: servicemesh-demo
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: b-db
+  name: b-db
+  namespace: servicemesh-demo
+spec:
+  selector:
+    matchLabels:
+      app: b-db
+  serviceName: b-db-headless
+  template:
+    metadata:
+      labels:
+        app: b-db
+        version: "1"
+    spec:
+      serviceAccountName: b-db
+      containers:
+        - env:
+            - name: POSTGRES_DATABASE
+              value: b
+            - name: POSTGRES_USER
+              value: b
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: b-db-password
+                  key: password
+          image: postgres:12
+          name: main
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data
+      volumes:
+        - name: data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-ssd
+        resources:
+          requests:
+            storage: 1Gi
+
+---
+
+# The password is just 'b' ('Yg==' in base64). The secret should really be 1. chosen more securely,
+# 2. be stored somewhere else and 3. not be checked into a (public) git repository.
+# We include it here for convenience of the demo.
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: b-db-password
+type: Opaque
+data:
+  password: Yg==

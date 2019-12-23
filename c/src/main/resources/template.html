@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rechnung</title>
+    <style>
+        * {
+            font-size: 25px;
+        }
+
+        table {
+            margin-left: 60px;
+            margin-right: 60px;
+            width: calc(100% - 120px);
+
+        }
+        tbody {
+            width: 100%;
+        }
+        table, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 5px;
+        }
+        td:nth-child(1) {
+            width: 70%;
+        }
+        td:nth-child(2) {
+            width: 30%;
+            text-align: right;
+            vertical-align: top;
+        }
+        .address {
+            white-space: pre;
+            margin:30px;
+        }
+        .sender {
+            float:right;
+        }
+        .receiver {
+            margin-left: 100px;
+        }
+        .clear {
+            clear:both;
+        }
+        .date {
+            text-align: right;
+            margin-right: 60px;
+            margin-bottom: 60px;
+        }
+        .subject {
+            font-weight: bold;
+            margin-left: 60px;
+            margin-bottom: 60px;
+        }
+        .description {
+            white-space: pre;
+        }
+        .netto, .brutto {
+            border-top: 3px solid black;
+        }
+        .logo {
+            float:right;
+            width: 200px;
+            margin-right: 60px;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+
+<body>
+<table>
+    <img class="logo" src="logo.png"/>
+    <div class="address sender">
+        Eine Firma
+        Eine Straße 1
+
+        12345 Musterstadt
+    </div>
+    <div class="clear"/>
+
+    <div class="address receiver">{{receiver}}</div>
+
+    <div class="date">Musterstadt, den {{date}}</div>
+
+    <div class="subject">Rechnung Nr. {{billNo}}</div>
+
+    <tbody>
+    {{#positions}}
+    <tr>
+        <td>
+            <div class="description">{{description}}</div>
+        </td>
+        <td>
+            {{amountNetto}} €
+        </td>
+    </tr>
+    {{/positions}}
+    <tr class="netto">
+        <td>
+            Gesamt Netto
+        </td>
+        <td>
+            {{amountNetto}} €
+        </td>
+    </tr>
+    <tr>
+        <td>
+            USt. {{ustFactor}} % auf {{amountNetto}} €
+        </td>
+        <td>
+            {{amountUst}} €
+        </td>
+    </tr>
+    <tr class="brutto">
+        <td>
+            <b>Gesamtbetrag</b>
+        </td>
+        <td>
+            <b>{{amountBrutto}} €</b>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+</html>
