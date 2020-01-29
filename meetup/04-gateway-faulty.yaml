@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: b-faulty
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - a
+  http:
+    - match:
+        - uri:
+            prefix: /v1/bills
+      route:
+        - destination:
+            host: b
+            port:
+              number: 80
