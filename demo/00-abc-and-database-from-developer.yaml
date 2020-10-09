@@ -293,6 +293,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: b-db-password
+  namespace: servicemesh-demo
 type: Opaque
 data:
   password: Yg==
