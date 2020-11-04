@@ -1,4 +1,4 @@
-Diese Git Repository begleitet das Youtube Video "Servicemesh in der Praxis: Istio".
+Diese Git Repository begleitet das Youtube Video "Servicemesh in der Praxis: Istio" https://www.youtube.com/watch?v=vuhTYOo80Jc .
 
 # Demo Plattform
 
