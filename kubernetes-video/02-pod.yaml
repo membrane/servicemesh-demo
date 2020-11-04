@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: a
+    version: "1"
+  name: demo-7c9457f5bd-857r6
+spec:
+  containers:
+    - image: predic8/servicemesh-demo-a:1
+      name: main

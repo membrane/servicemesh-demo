@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo
+  name: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: a
+  template:
+    metadata:
+      labels:
+        app: a
+        version: "1"
+    spec:
+      containers:
+        - image: predic8/kubernetes-demo-a:1
+          name: main
