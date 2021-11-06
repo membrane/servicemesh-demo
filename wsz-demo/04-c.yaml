@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: c
+  name: c
+  namespace: demo
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: c
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: c
+  namespace: demo
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: c
+  name: c
+  namespace: demo
+spec:
+  selector:
+    matchLabels:
+      app: c
+  template:
+    metadata:
+      labels:
+        app: c
+        version: "1"
+    spec:
+      serviceAccountName: c
+      containers:
+        - image: predic8/servicemesh-demo-c:2
+          name: main
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi

@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk13 AS build
 WORKDIR /app
 ADD gradlew /app/
 ADD gradle /app/gradle/
-RUN bash ./gradlew --version
+RUN sed -i 's/\r//' gradlew && bash ./gradlew --version
 ADD build.gradle /app
 RUN bash ./gradlew classes || \
  bash ./gradlew classes || \

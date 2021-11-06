@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: b
+  name: b
+  namespace: demo
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: b
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: b
+  namespace: demo
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: b
+  name: b
+  namespace: demo
+spec:
+  selector:
+    matchLabels:
+      app: b
+  template:
+    metadata:
+      labels:
+        app: b
+        version: "1"
+    spec:
+      serviceAccountName: b
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://b-db:5432/b
+            - name: SPRING_DATASOURCE_USERNAME
+              value: b
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: b.b-db.credentials
+                  key: password
+          image: predic8/servicemesh-demo-b:2
+          name: main
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 1Gi

@@ -1,0 +1,29 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  name: b-db
+  namespace: demo
+spec:
+  databases:
+    b: b
+  numberOfInstances: 3
+  patroni:
+    initdb:
+      data-checksums: "true"
+      encoding: UTF8
+      locale: en_US.UTF-8
+  postgresql:
+    version: "12"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+  teamId: b
+  users:
+    b: []
+  volume:
+    size: 1Gi
+    storageClass: local-ssd
