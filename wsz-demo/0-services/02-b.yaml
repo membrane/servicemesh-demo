@@ -7,7 +7,8 @@ metadata:
   namespace: demo
 spec:
   ports:
-    - port: 80
+    - name: http
+      port: 80
       protocol: TCP
       targetPort: 8080
   selector:
@@ -57,7 +58,8 @@ spec:
           image: predic8/servicemesh-demo-b:2
           name: main
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 8080
               protocol: TCP
           resources:
             limits:
